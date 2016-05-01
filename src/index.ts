@@ -1,8 +1,8 @@
-import * as jquery from 'jquery';
+import * as $ from 'jquery';
 import {TestComponent} from "./test.component/test.component";
 
-var test = new TestComponent()
+var hui  = new TestComponent();
 
 $(document).ready(function() {
-    console.log(test.test())
+   console.log(hui.test1())
 });
