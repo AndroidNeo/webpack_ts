@@ -1,7 +1,7 @@
 export class TestComponent {
-    test() {
-        return `
-            it's working
-        `;
+    public test = 'asdsd';
+
+    test1() {
+        return `it's working`;
     }
 }
