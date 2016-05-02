@@ -1,8 +1,18 @@
-import * as jquery from 'jquery';
+import * as $ from 'jquery';
 import {TestComponent} from "./test.component/test.component";
 
-var test = new TestComponent()
+import {Model} from "./model/model";
+import {Tile} from "./model/tile";
+import {CGPoint} from "./objc/objc_types";
+
+
+let model = new Model();
+let tile = new Tile(1, new CGPoint(3,5));
+
+var test = new TestComponent();
 
 $(document).ready(function() {
-    console.log(test.test())
+    console.log(test.test());
+    console.log(model.test());
+    console.log(tile);
 });
