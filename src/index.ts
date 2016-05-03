@@ -17,6 +17,7 @@ let moveDirection:       CGVector;
 
 $(document).ready(function() {
 
+    
     // console.log(model);
     // console.log(tile);
     // console.log('hello, world');
