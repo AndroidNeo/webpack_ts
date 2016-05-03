@@ -2,7 +2,7 @@
  * Created by Artur on 02.05.16.
  */
 
-import {CGPoint} from "../objc/objc_types";
+import {CGPoint} from '../objc/objc_types';
 
 export class Tile {
 
@@ -13,12 +13,12 @@ export class Tile {
 
     numberValue: number = 0;
 
-    center:         CGPoint = new CGPoint(0,0);
-    previousCenter: CGPoint = new CGPoint(0,0);
+    center:         CGPoint = new CGPoint(0, 0);
+    previousCenter: CGPoint = new CGPoint(0, 0);
 
     onValidCell: boolean = false;
 
-    constructor(numberValue:number, center:CGPoint) {
+    constructor(numberValue: number, center: CGPoint) {
 
         this.numberValue    = numberValue;
         this.center         = center;
