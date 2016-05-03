@@ -3,16 +3,19 @@
  */
 
 export class MoveDirection {
-    
+
     left:  boolean;
     right: boolean;
     up:    boolean;
     down:  boolean;
-    
+
     isHorizontal: boolean;
 
     constructor() {
-        
+        this.resetFields();
+    }
+
+    resetFields() {
         this.left  = false;
         this.right = false;
         this.up    = false;
@@ -20,5 +23,5 @@ export class MoveDirection {
 
         this.isHorizontal = false;
     }
-    
+
 }

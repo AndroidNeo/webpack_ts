@@ -2,7 +2,7 @@
  * Created by Artur on 02.05.16.
  */
 
-import {CGPoint} from "../objc/objc_types";
+import {CGPoint} from '../objc/objc_types';
 
 export class Cell {
 
@@ -10,7 +10,7 @@ export class Cell {
     static kCellFree: number = 1;
     static kCellPlay: number = 2;
 
-    center: CGPoint = new CGPoint(0,0);
+    center: CGPoint = new CGPoint(0, 0);
 
     i: number = 0;
     j: number = 0;
@@ -29,8 +29,8 @@ export class Cell {
     }
 
     makePlayCellWithNumber(numberValue: number) {
-        this.numberValue = numberValue
-        this.type        = Cell.kCellPlay
+        this.numberValue = numberValue;
+        this.type        = Cell.kCellPlay;
     }
 
 }

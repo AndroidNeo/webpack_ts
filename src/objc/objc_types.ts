@@ -11,7 +11,7 @@ export class CGPoint {
         this.x = x;
         this.y = y;
     }
-    
+
     static Make(x: number, y: number) {
         return new CGPoint(x, y);
     }
