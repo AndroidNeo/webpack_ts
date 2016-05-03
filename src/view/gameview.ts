@@ -164,3 +164,21 @@
 //
 //
 // }
+import {Model} from '../model/model';
+import {Tile} from '../model/tile';
+import {CGPoint} from '../objc/objc_types';
+
+let model = new Model(1);
+let tile = new Tile(1, new CGPoint(3,5));
+
+$(document).ready(function(){
+  console.log('mymodel ',model);
+  
+})
+
+
+
+
+/*
+type
+ */
