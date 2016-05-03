@@ -15,4 +15,5 @@ $(document).ready(function() {
     console.log(test.test1());
     console.log(model);
     console.log(tile);
+    console.log('hello, world');
 });
