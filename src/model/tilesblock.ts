@@ -13,7 +13,6 @@ export class TilesBlock {
     isHorizontal: boolean;
 
     tilesInBlock: Tile[];
-
     constructor(isHorizontal: boolean) {
         this.isHorizontal = isHorizontal;
         this.tilesInBlock = [];
@@ -26,7 +25,7 @@ export class TilesBlock {
     }
 
     sortTiles() {
-
+        var $this = this;
         let tilesToSort: Tile[] = [];
         for (let tile of this.tilesInBlock) {
             tilesToSort.push(tile);
@@ -43,9 +42,13 @@ export class TilesBlock {
     }
 
         sortMethodForTiles(tile1: Tile, tile2: Tile) {
+            let isHorizontal = true;
+
             let result = -1;
-            let tile1_greater_than_tile2 = ((this.isHorizontal && tile1.center.x > tile2.center.x)
-                || (this.isHorizontal === false && tile1.center.y > tile2.center.y));
+            // let tile1_greater_than_tile2 = (($this.isHorizontal && tile1.center.x > tile2.center.x)
+            //     || ($this.isHorizontal === false && tile1.center.y > tile2.center.y));
+            let tile1_greater_than_tile2 = ((isHorizontal && tile1.center.x > tile2.center.x)
+            || (isHorizontal === false && tile1.center.y > tile2.center.y));
             if (tile1_greater_than_tile2) {
                 result = 1;
             }

@@ -218,6 +218,7 @@ export class Model {
         }
 
         let touchedTilesBlock = this.getTouchedTilesBlock();
+        //console.log(touchedTilesBlock);
         touchedTilesBlock.moveByVector(s);
 
         let currentTilesBlock = touchedTilesBlock;
