@@ -31,8 +31,11 @@ export class TilesBlock {
             tilesToSort.push(tile);
         }
 
-        let sortedTiles: Tile[] = tilesToSort.sort(this.sortMethodForTiles);
-
+        // let sortedTiles: Tile[] = tilesToSort.sort(this.sortMethodForTiles);
+        
+        let params = {'isHorizontal': this.isHorizontal};
+        let sortedTiles: Tile[] = tilesToSort.sort(this.createSorter(params));
+        
         this.reset();
 
         for (let tile of sortedTiles) {
@@ -40,21 +43,23 @@ export class TilesBlock {
         }
 
     }
-
-        sortMethodForTiles(tile1: Tile, tile2: Tile) {
-            let isHorizontal = true;
+    
+    createSorter(params) {
+        return function (tile1: Tile, tile2: Tile) {
 
             let result = -1;
-            // let tile1_greater_than_tile2 = (($this.isHorizontal && tile1.center.x > tile2.center.x)
-            //     || ($this.isHorizontal === false && tile1.center.y > tile2.center.y));
-            let tile1_greater_than_tile2 = ((isHorizontal && tile1.center.x > tile2.center.x)
-            || (isHorizontal === false && tile1.center.y > tile2.center.y));
+            let tile1_greater_than_tile2 =
+                ((params.isHorizontal && tile1.center.x > tile2.center.x)
+                || (params.isHorizontal === false && tile1.center.y > tile2.center.y));
+
             if (tile1_greater_than_tile2) {
                 result = 1;
             }
             return result;
-    }
 
+        }
+    }
+    
     reset() {
         this.tilesInBlock.splice(0, this.tilesInBlock.length);
     }

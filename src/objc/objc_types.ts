@@ -31,3 +31,19 @@ export class CGVector {
         return new CGVector(x, y);
     }
 }
+
+export class CGSize {
+
+    width:  number = 0;
+    height: number = 0;
+
+    constructor (width: number, height: number) {
+        this.width  = width;
+        this.height = height;
+    }
+
+    static Make(width: number, height: number) {
+        return new CGSize(width, height);
+    }
+
+}

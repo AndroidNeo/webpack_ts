@@ -6,6 +6,9 @@ import {Tile} from './model/tile';
 import {CGPoint, CGVector} from './objc/objc_types';
 
 
+
+
+
 let model = new Model(1);
 let kModelToView:number = 0;
 let tile = new Tile(1, new CGPoint(3,5));
@@ -17,7 +20,7 @@ let moveDirection:       CGVector;
 
 $(document).ready(function() {
 
-    
+
     // console.log(model);
     // console.log(tile);
     // console.log('hello, world');
@@ -72,7 +75,7 @@ $(document).ready(function() {
         let a1 = previousCoord;
         var s  = CGVector.Make(a2.x - a1.x, a2.y - a1.y);
 
-        if (moveDirectionDefine == false) {
+        if (moveDirectionDefine === false) {
 
             if (Math.abs(s.dx) > Math.abs(s.dy)) {
                 moveDirection = CGVector.Make(1, 0);

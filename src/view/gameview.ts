@@ -1,184 +1,212 @@
+import {Model} from "../model/model";
+import {ViewMethods} from "./viewmethods";
+import {CGSize, CGPoint} from "../objc/objc_types";
+import {Cell} from "../model/cell";
+
 /**
- * Created by Artur on 03.05.16.
+ * Created by Artur on 04.05.16.
  */
 
-// class GameView: UIView {
+export class GameView {
+
+    model: Model;
+
+    cellViewLength:  number;
+    originViewPoint: CGPoint;
+    kModelToView:    number;
+    
+    tileViews: TileViews[];
+
+    constructor(levelNumber: number) {
+        this.model = new Model(levelNumber);
+    }
+    
+    createView() {
+
+        ViewMethods.clearScreen();
+
+        let mainScreen = ViewMethods.getMainScreen();
+
+        // let screenWidth = mainScreen.width();
+        // mainScreen.height(screenWidth);
+
+
+        let size = CGSize.Make(mainScreen.width(), mainScreen.height());
+
+        let sizeN = this.model.getSizeN();
+        let sizeM = this.model.getSizeM();
+
+        this.cellViewLength = size.width / sizeM;
+        let yShift = (size.height - this.cellViewLength * sizeN) / 2;
+        this.originViewPoint = CGPoint.Make(0, yShift);
+
+        this.kModelToView = this.cellViewLength / Model.kModelCellLength;
+
+        let gameField = self.model.getGameField();
+
+        for (let i = 0; i < sizeN; i++) {
+            for (let j = 0; j < sizeM; j++) {
+
+                let cell:Cell = gameField[i][j];
+
+                let cellView = `<div class="cell type-` + cell.type + `"
+                                    style="
+                                        width:` + this.cellViewLength + `px;
+                                        height:` + this.cellViewLength + `px;
+                                        top:` + this.originViewPoint.y + i * this.cellViewLength + `px;
+                                        left:` + this.originViewPoint.x + j * this.cellViewLength + `px;
+                                    "
+                                    data-type="` + cell.type + `"
+                                    data-number="` + cell.numberValue + `"
+                                    `;
+
+                if (cell.type == Cell.kCellPlay) {
+                    cellView = cellView + 'id="cell-' + cell.numberValue + '"';
+                }
+
+                cellView = cellView + `>`;
+
+                if (cell.type == Cell.kCellPlay) {
+                    cellView = cellView + `<span class="number">` + cell.numberValue + `</span>`;
+                }
+
+                cellView = cellView + `</div>`;
+
+                mainScreen.append(cellView);
+
+            }
+        }
+
+        this.tileViews = [];
+
+        for (let tile of this.model.getTiles()) {
+            let tileView:TileView = TileView.init(tile: tile)
+            tileView.frame = CGRectMake(0, 0, self.cellViewLength, self.cellViewLength)
+            tileView.backgroundColor = UIColor.redColor();
+            tileView.addNumberLabel()
+            self.tileViews.append(tileView)
+            self.addSubview(tileView)
+        }
+
+    }
+        
+        
+        
+        
+        
+        
+
+    }
+
+
+}
+
+
+// let grid = $('.grid');
+//
+// let gridWidth = grid.width();
+// // let gridHeight = grid.height();
+//
+// kModelToView = gridWidth/model.width;
+// $('.grid').height(gridWidth);
+// // let cellHeight = gridHeight/model.height;
+//
+// //document.createElement('<div class="cell"></div>');
+// model.gameField.forEach(function(row, i){
+//     row.forEach(function(cell, j){
+//         // console.log(cell, i, j);
 //
 //
-//     var model:Model
-//     var tileViews:[TileView] = []
-//     var originViewPoint:CGPoint = CGPointMake(0, 0);
-//     var kModelToView:CGFloat = 0;
-//     var cellViewLength:CGFloat = 0;
+//         var cellDiv = `<div class="cell type-`+cell.type+`"
+//                             style="
+//                                 width:`+kModelToView+`px;
+//                                 height:`+kModelToView+`px;
+//                                 top:`+cell.i*kModelToView+`px;
+//                                 left:`+cell.j*kModelToView+`px;
+//                             "
+//                             data-type="`+cell.type+`"
+//                             data-number="`+cell.numberValue+`"
+//                             `
+//         if(cell.numberValue>0)
+//             cellDiv = cellDiv + 'id="cell-'+cell.numberValue+'"';
+//         cellDiv = cellDiv + `>`;
 //
-//     var moveDirectionDefine = false;
-//     var moveDirection = CGVectorMake(0, 0);
-//
-//     init(gameModel: Model) {
-//
-//         self.model = gameModel
-//         super.init(frame: CGRectMake(0,0,0,0))
-//
-//     }
-//
-//     required init?(coder aDecoder: NSCoder) {
-//         fatalError("init(coder:) has not been implemented")
-//     }
+//         if(cell.numberValue>0)
+//             cellDiv = cellDiv +`<span class="number">`+cell.numberValue+`</span>`;
 //
 //
-//     func createView() {
 //
-//         self.backgroundColor = UIColor.grayColor();
+//         cellDiv = cellDiv+`</div>`;
 //
-//         let size = self.bounds.size;
+//         grid.append(cellDiv);
+//     })
+// })
 //
-//         let sizeN:Int = self.model.getSizeN();
-//         let sizeM:Int = self.model.getSizeM();
+// $('.cell').on('touchmove', function($event){
+//     // console.log('touch move', $event.originalEvent.touches[0].pageX);
+//     //console.log($event);
+//     let event: any =  $event.originalEvent;
+//     currentCoord = CGPoint.Make(event.touches[0].pageX, event.touches[0].pageY);
 //
-//         self.cellViewLength = size.width / CGFloat(sizeM);
-//         let yShift:CGFloat = (size.height - self.cellViewLength * CGFloat(sizeN)) / 2;
-//         self.originViewPoint = CGPointMake(0, yShift);
+//     let a2 = currentCoord;
+//     let a1 = previousCoord;
+//     var s  = CGVector.Make(a2.x - a1.x, a2.y - a1.y);
 //
-//         self.kModelToView = self.cellViewLength / Model.kModelCellLength;
+//     if (moveDirectionDefine === false) {
 //
-//         var gameField = self.model.getGameField();
-//
-//         for i in 0 ..< sizeN {
-//             for j in 0 ..< sizeM {
-//
-//                 let cell:Cell = gameField[i][j]
-//
-//                 let cellView:UIView = UIView.init(frame: CGRectMake(self.originViewPoint.x + CGFloat(j)*self.cellViewLength, self.originViewPoint.y + CGFloat(i)*self.cellViewLength, self.cellViewLength, self.cellViewLength))
-//
-//                 var color = UIColor.whiteColor()
-//                 if (cell.type == Cell.kCellWall) {
-//                     color = UIColor.brownColor();
-//                 } else if (cell.type == Cell.kCellFree) {
-//                     color = UIColor.whiteColor();
-//                 } else if (cell.type == Cell.kCellPlay) {
-//                     color = UIColor.whiteColor();//[UIColor yellowColor];
-//                 }
-//                 cellView.backgroundColor = color
-//
-//                 cellView.layer.borderWidth = 0.5;
-//                 cellView.layer.borderColor = UIColor.blackColor().CGColor
-//
-//                 if (cell.type == Cell.kCellPlay) {
-//                     let label:UILabel = UILabel.init(frame: CGRectMake(0, 0, self.cellViewLength, self.cellViewLength))
-//                     label.text = String(cell.number)
-//                     label.textAlignment = .Center
-//                     label.font = UIFont.boldSystemFontOfSize(15.0 * self.cellViewLength / 40.0);
-//                     label.textColor = UIColor.grayColor();
-//                     cellView.addSubview(label);
-//                 }
-//
-//                 self.addSubview(cellView)
-//
-//             }
+//         if (Math.abs(s.dx) > Math.abs(s.dy)) {
+//             moveDirection = CGVector.Make(1, 0);
+//         } else {
+//             moveDirection = CGVector.Make(0, 1);
 //         }
 //
-//         self.tileViews = []
+//         moveDirectionDefine = true;
+//     }
 //
-//         for tile in self.model.getTiles() {
-//             let tileView:TileView = TileView.init(tile: tile)
-//             tileView.frame = CGRectMake(0, 0, self.cellViewLength, self.cellViewLength)
-//             tileView.backgroundColor = UIColor.redColor();
-//             tileView.addNumberLabel()
-//             self.tileViews.append(tileView)
-//             self.addSubview(tileView)
-//         }
+//     s.dx = s.dx * moveDirection.dx;
+//     s.dy = s.dy * moveDirection.dy;
+//
+//     let isMoveValid = (Math.abs(s.dx) > 0 || Math.abs(s.dy) > 0)
+//     if (isMoveValid) {
+//
+//         let sModel = CGVector.Make(s.dx / kModelToView, s.dy / kModelToView);
+//         //let tileView = (touch.view as? TileView);
+//         model.didMoveTile(model.tiles[3], sModel);
+//         //console.log(this);
+//         //self.updateTiles()
+//         cellSetPosition(this.id, kModelToView * model.tiles[3].center.x, kModelToView * model.tiles[3].center.y);
 //
 //     }
 //
-//     func updateTiles() {
-//         for tileView in self.tileViews {
-//             let tileCenter = tileView.tile!.center;
-//             tileView.center = CGPointMake(self.originViewPoint.x + self.kModelToView * tileCenter.x, self.originViewPoint.y + self.kModelToView * tileCenter.y);
-//             tileView.label!.textColor = tileView.tile!.onValidCell ? UIColor.yellowColor(): UIColor.blackColor();
-//         }
+//     previousCoord = currentCoord;
+//     //console.log(this.id, 'current cel id');
 //
-//         self.setNeedsDisplay();
-//     }
+// }).on('touchstart', function($event){
+//     //console.log('touch start', $event);
+//     let event: any =  $event.originalEvent;
+//     previousCoord = CGPoint.Make(event.touches[0].pageX, event.touches[0].pageY);
 //
-//     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+//     moveDirectionDefine = false;
+//     moveDirection = CGVector.Make(0, 0);
 //
-//         self.moveDirectionDefine = false;
-//         self.moveDirection = CGVectorMake(0, 0);
-//
-//         if let touch = touches.first {
-//             if (touch.view != nil && (touch.view?.isKindOfClass(TileView))!) {
-//                 self.model.touchTileBegan()
-//             }
-//         }
-//
-//         super.touchesBegan(touches, withEvent: event);
-//
-//     }
-//
-//     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-//
-//         if let touch = touches.first {
-//             if (touch.view != nil && touch.view!.isKindOfClass(TileView)) {
-//                 let a2 = touch.locationInView(self)
-//                 let a1 = touch.previousLocationInView(self)
-//                 var s = CGVectorMake(a2.x - a1.x, a2.y - a1.y);
-//
-//                 if (self.moveDirectionDefine == false) {
-//
-//                     if (abs(s.dx) > abs(s.dy)) {
-//                         self.moveDirection = CGVectorMake(1, 0);
-//                     } else {
-//                         self.moveDirection = CGVectorMake(0, 1);
-//                     }
-//
-//                     self.moveDirectionDefine = true;
-//                 }
-//
-//                 s.dx = s.dx * self.moveDirection.dx;
-//                 s.dy = s.dy * self.moveDirection.dy;
-//
-//                 let isMoveValid = (abs(s.dx) > 0 || abs(s.dy) > 0)
-//                 if isMoveValid {
-//
-//                     let sModel = CGVectorMake(s.dx / self.kModelToView, s.dy / self.kModelToView);
-//                     let tileView = (touch.view as? TileView);
-//                     self.model.didMoveTile(tileView!.tile!, byVector: sModel);
-//                     self.updateTiles()
-//
-//                 }
-//
-//             }
-//         }
-//
-//         super.touchesMoved(touches, withEvent:event);
-//     }
-//
-//     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-//
-//         self.model.setTilesOnGameField()
-//         self.updateTiles()
-//
-//         super.touchesEnded(touches, withEvent: event)
-//
-//     }
+//     // if let touch = touches.first {
+//     //     if (touch.view != nil && (touch.view?.isKindOfClass(TileView))!) {
+//     model.touchTileBegan()
+//     //     }
+//     // }
 //
 //
+// }).on('touchend', function($event){
+//     //console.log('touch end', $event);
+// })
+//
+//
+// //demo cell position set
+// cellSetPosition(1, 50,44);
+//
+// });
+//
+//
+// function cellSetPosition(cellId, posX, posY){
+//     $('#'+cellId).offset({left: posX, top: posY});
 // }
-import {Model} from '../model/model';
-import {Tile} from '../model/tile';
-import {CGPoint} from '../objc/objc_types';
-
-let model = new Model(1);
-let tile = new Tile(1, new CGPoint(3,5));
-
-$(document).ready(function(){
-  console.log('mymodel ',model);
-  
-})
-
-
-
-
-/*
-type
- */
