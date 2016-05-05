@@ -27,9 +27,14 @@ export class CGVector {
         this.dy = dy;
     }
 
-    static Make(x: number, y: number) {
-        return new CGVector(x, y);
+    static Make(dx: number, dy: number) {
+        return new CGVector(dx, dy);
     }
+
+    static MakeByPoints(a1: CGPoint, a2: CGPoint) {
+        return new CGVector(a2.x - a1.x, a2.y - a1.y);
+    }
+
 }
 
 export class CGSize {

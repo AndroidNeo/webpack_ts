@@ -8,7 +8,7 @@
 
 import {Model} from '../model/model';
 
-export class GameView {
+export class Game1View {
 
     constructor(levelNumber: number) {
 

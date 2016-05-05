@@ -1,7 +1,9 @@
-import {Model} from "../model/model";
-import {ViewMethods} from "./viewmethods";
-import {CGSize, CGPoint} from "../objc/objc_types";
-import {Cell} from "../model/cell";
+import * as $ from 'jquery';import * as $ from 'jquery';
+import {Model} from '../model/model';
+import {ViewMethods} from './viewmethods';
+import {CGSize, CGPoint, CGVector} from '../objc/objc_types';
+import {TileView} from './tileview';
+import {CellView} from './cellview';
 
 /**
  * Created by Artur on 04.05.16.
@@ -11,11 +13,22 @@ export class GameView {
 
     model: Model;
 
+    mainScreen: JQuery;
+
+    sizeN: number;
+    sizeM: number;
+
     cellViewLength:  number;
     originViewPoint: CGPoint;
     kModelToView:    number;
     
-    tileViews: TileViews[];
+    tileViews: TileView[];
+
+    previousTouchPoint: CGPoint;
+    currentTouchPoint:  CGPoint;
+
+    moveDirection:       CGVector;
+    moveDirectionDefine: boolean;
 
     constructor(levelNumber: number) {
         this.model = new Model(levelNumber);
@@ -24,79 +37,206 @@ export class GameView {
     createView() {
 
         ViewMethods.clearScreen();
+        ViewMethods.setScreenSize();
 
-        let mainScreen = ViewMethods.getMainScreen();
+        this.mainScreen = ViewMethods.getMainScreen();
 
-        // let screenWidth = mainScreen.width();
-        // mainScreen.height(screenWidth);
+        this.sizeN = this.model.getSizeN();
+        this.sizeM = this.model.getSizeM();
 
+        let size = CGSize.Make(this.mainScreen.width(), this.mainScreen.height());
 
-        let size = CGSize.Make(mainScreen.width(), mainScreen.height());
+        console.log(this.mainScreen);
+        console.log(size);
 
-        let sizeN = this.model.getSizeN();
-        let sizeM = this.model.getSizeM();
-
-        this.cellViewLength = size.width / sizeM;
-        let yShift = (size.height - this.cellViewLength * sizeN) / 2;
+        this.cellViewLength = size.width / this.sizeM;
+        let yShift = (size.height - this.cellViewLength * this.sizeN) / 2;
         this.originViewPoint = CGPoint.Make(0, yShift);
 
         this.kModelToView = this.cellViewLength / Model.kModelCellLength;
 
-        let gameField = self.model.getGameField();
+        this.addCells();
+        this.addTiles();
+        this.addEventListeners();
 
-        for (let i = 0; i < sizeN; i++) {
-            for (let j = 0; j < sizeM; j++) {
+    }
 
-                let cell:Cell = gameField[i][j];
+    addCells() {
 
-                let cellView = `<div class="cell type-` + cell.type + `"
-                                    style="
-                                        width:` + this.cellViewLength + `px;
-                                        height:` + this.cellViewLength + `px;
-                                        top:` + this.originViewPoint.y + i * this.cellViewLength + `px;
-                                        left:` + this.originViewPoint.x + j * this.cellViewLength + `px;
-                                    "
-                                    data-type="` + cell.type + `"
-                                    data-number="` + cell.numberValue + `"
-                                    `;
+        let gameField = this.model.getGameField();
 
-                if (cell.type == Cell.kCellPlay) {
-                    cellView = cellView + 'id="cell-' + cell.numberValue + '"';
-                }
+        for (let i = 0; i < this.sizeN; i++) {
+            for (let j = 0; j < this.sizeM; j++) {
 
-                cellView = cellView + `>`;
-
-                if (cell.type == Cell.kCellPlay) {
-                    cellView = cellView + `<span class="number">` + cell.numberValue + `</span>`;
-                }
-
-                cellView = cellView + `</div>`;
-
-                mainScreen.append(cellView);
+                let cell     = gameField[i][j];
+                let cellView = new CellView(cell, this);
+                this.mainScreen.append(cellView.data);
 
             }
         }
 
+    }
+
+    addTiles() {
+
         this.tileViews = [];
 
         for (let tile of this.model.getTiles()) {
-            let tileView:TileView = TileView.init(tile: tile)
-            tileView.frame = CGRectMake(0, 0, self.cellViewLength, self.cellViewLength)
-            tileView.backgroundColor = UIColor.redColor();
-            tileView.addNumberLabel()
-            self.tileViews.append(tileView)
-            self.addSubview(tileView)
+
+            let tileView = new TileView(tile, this);
+            this.tileViews.push(tileView);
+            this.mainScreen.append(tileView.data);
+
         }
 
     }
-        
-        
-        
-        
-        
-        
+
+    addEventListeners() {
+
+        for (let tileView of this.tileViews) {
+
+
+            $(tileView.getId()).on('touchstart', function ($event) {
+
+                console.log('start!!!');
+
+                let event: any          =  $event.originalEvent;
+                this.previousTouchPoint = CGPoint.Make(event.touches[0].pageX, event.touches[0].pageY);
+
+                this.moveDirectionDefine = false;
+                this.moveDirection       = CGVector.Make(0, 0);
+
+                this.model.touchTileBegan();
+
+            });
+
+            console.log('create on start', $(tileView.getId()));
+
+        }
+
+        for (let tileView of this.tileViews) {
+
+            $(tileView.getId()).on('touchmove', function ($event) {
+
+                let event: any         =  $event.originalEvent;
+                this.currentTouchPoint = CGPoint.Make(event.touches[0].pageX, event.touches[0].pageY);
+
+                var s = CGVector.MakeByPoints(this.previousTouchPoint, this.currentTouchPoint);
+
+                if (this.moveDirectionDefine === false) {
+
+                    if (Math.abs(s.dx) > Math.abs(s.dy)) {
+                        this.moveDirection = CGVector.Make(1, 0);
+                    } else {
+                        this.moveDirection = CGVector.Make(0, 1);
+                    }
+
+                    this.moveDirectionDefine = true;
+                }
+
+                s.dx = s.dx * this.moveDirection.dx;
+                s.dy = s.dy * this.moveDirection.dy;
+
+                let isMoveValid = (Math.abs(s.dx) > 0 || Math.abs(s.dy) > 0);
+                if (isMoveValid) {
+
+                    let sModel = CGVector.Make(s.dx / this.kModelToView, s.dy / this.kModelToView);
+                    this.model.didMoveTile(tileView.tile, sModel);
+                    this.updateTiles();
+
+                }
+
+                this.previousTouchPoint = this.currentTouchPoint;
+
+            });
+
+        }
+
+        for (let tileView of this.tileViews) {
+
+            $(tileView.getId()).on('touchend', function ($event) {
+
+                this.model.setTilesOnGameField();
+                this.updateTiles();
+            
+            });
+
+        }
 
     }
+
+    updateTiles() {
+        for (let tileView of this.tileViews) {
+            let tileCenter = tileView.tile.center;
+            let center = CGPoint.Make(this.originViewPoint.x + this.kModelToView * tileCenter.x,
+                                      this.originViewPoint.y + this.kModelToView * tileCenter.y);
+            $('#tile-'+tileView.tile.numberValue).offset({left: center.x, top: center.y});
+        }
+    }
+
+//     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+//
+//         self.moveDirectionDefine = false;
+//         self.moveDirection = CGVectorMake(0, 0);
+//
+//         if let touch = touches.first {
+//             if (touch.view != nil && (touch.view?.isKindOfClass(TileView))!) {
+//                 self.model.touchTileBegan()
+//             }
+//         }
+//
+//         super.touchesBegan(touches, withEvent: event);
+//
+//     }
+//
+//     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+//
+//         if let touch = touches.first {
+//             if (touch.view != nil && touch.view!.isKindOfClass(TileView)) {
+//                 let a2 = touch.locationInView(self)
+//                 let a1 = touch.previousLocationInView(self)
+//                 var s = CGVectorMake(a2.x - a1.x, a2.y - a1.y);
+//
+//                 if (self.moveDirectionDefine == false) {
+//
+//                     if (abs(s.dx) > abs(s.dy)) {
+//                         self.moveDirection = CGVectorMake(1, 0);
+//                     } else {
+//                         self.moveDirection = CGVectorMake(0, 1);
+//                     }
+//
+//                     self.moveDirectionDefine = true;
+//                 }
+//
+//                 s.dx = s.dx * self.moveDirection.dx;
+//                 s.dy = s.dy * self.moveDirection.dy;
+//
+//                 let isMoveValid = (abs(s.dx) > 0 || abs(s.dy) > 0)
+//                 if isMoveValid {
+//
+//                     let sModel = CGVectorMake(s.dx / self.kModelToView, s.dy / self.kModelToView);
+//                     let tileView = (touch.view as? TileView);
+//                     self.model.didMoveTile(tileView!.tile!, byVector: sModel);
+//                     self.updateTiles()
+//
+//                 }
+//
+//             }
+//         }
+//
+//         super.touchesMoved(touches, withEvent:event);
+//     }
+//
+//     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+//
+//         self.model.setTilesOnGameField()
+//         self.updateTiles()
+//
+//         super.touchesEnded(touches, withEvent: event)
+//
+//     }
+
+
 
 
 }

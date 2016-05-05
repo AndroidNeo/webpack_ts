@@ -13,4 +13,10 @@ export class ViewMethods {
     static getMainScreen() {
         return $('#main_screen');
     }
+
+    static setScreenSize() {
+        let width = ViewMethods.getMainScreen().width();
+        ViewMethods.getMainScreen().height(width);
+
+    }
 }

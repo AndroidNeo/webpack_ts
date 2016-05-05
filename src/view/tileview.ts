@@ -1,6 +1,46 @@
+import {Tile} from '../model/tile';
+import {GameView} from './gameview';
 /**
  * Created by Artur on 03.05.16.
  */
+
+export class TileView {
+
+    tile: Tile;
+    data: string;
+    
+    constructor(tile: Tile, gameView: GameView) {
+        
+        this.tile = tile;
+        
+        this.data = `<div class="tile"
+                    style="
+                        width:`  + gameView.cellViewLength + `px;
+                        height:` + gameView.cellViewLength + `px;
+                        top:`    + gameView.originViewPoint.y + tile.i * gameView.cellViewLength + `px;
+                        left:`   + gameView.originViewPoint.x + tile.j * gameView.cellViewLength + `px;
+                    "
+                    data-onvalidcell="` + (tile.onValidCell ? 1 : 0) + `"
+                    data-number="`      + tile.numberValue + `"
+                    `;
+
+        this.data = this.data + 'id="tile-' + tile.numberValue + '"';
+
+        this.data = this.data + `>`;
+
+        this.data = this.data + `<span class="number">` + tile.numberValue + `</span>`;
+
+        this.data = this.data + `</div>`;
+
+    }
+    
+    getId() {
+        return '#tile-' + this.tile.numberValue;
+    }
+    
+}
+
+
 
 // class TileView: UIView {
 //
