@@ -110,13 +110,13 @@ export class GameView {
 
             });
 
-            console.log('create on start', $(tileView.getId()));
-
         }
 
         for (let tileView of this.tileViews) {
 
             $(tileView.getId()).on('touchmove', function ($event) {
+
+                console.log(this.model);
 
                 let event: any         =  $event.originalEvent;
                 this.currentTouchPoint = CGPoint.Make(event.touches[0].pageX, event.touches[0].pageY);

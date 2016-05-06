@@ -9,16 +9,16 @@ export class TileView {
     tile: Tile;
     data: string;
     
-    constructor(tile: Tile, gameView: GameView) {
+    constructor(tile: Tile, params: any) {
         
         this.tile = tile;
         
         this.data = `<div class="tile"
                     style="
-                        width:`  + gameView.cellViewLength + `px;
-                        height:` + gameView.cellViewLength + `px;
-                        top:`    + gameView.originViewPoint.y + tile.i * gameView.cellViewLength + `px;
-                        left:`   + gameView.originViewPoint.x + tile.j * gameView.cellViewLength + `px;
+                        width:`  + params.cellViewLength + `px;
+                        height:` + params.cellViewLength + `px;
+                        top:`    + params.originViewPoint.y + tile.i * params.cellViewLength + `px;
+                        left:`   + params.originViewPoint.x + tile.j * params.cellViewLength + `px;
                     "
                     data-onvalidcell="` + (tile.onValidCell ? 1 : 0) + `"
                     data-number="`      + tile.numberValue + `"

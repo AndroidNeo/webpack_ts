@@ -10,7 +10,7 @@ export class CellView {
     cell: Cell;
     data: string;
 
-    constructor(cell: Cell, gameView: GameView) {
+    constructor(cell: Cell, params: any) {
         
         this.cell = cell;
 
@@ -18,18 +18,18 @@ export class CellView {
 
         this.data = `<div class="cell type-` + cell.type + `"
                     style="
-                        width:`  + gameView.cellViewLength + `px;
-                        height:` + gameView.cellViewLength + `px;
-                        top:`    + gameView.originViewPoint.y + cell.i * gameView.cellViewLength + `px;
-                        left:`   + gameView.originViewPoint.x + cell.j * gameView.cellViewLength + `px;
+                        width:`  + params.cellViewLength + `px;
+                        height:` + params.cellViewLength + `px;
+                        top:`    + params.originViewPoint.y + cell.i * params.cellViewLength + `px;
+                        left:`   + params.originViewPoint.x + cell.j * params.cellViewLength + `px;
                     "
                     data-type="`   + cell.type + `"
                     data-number="` + cell.numberValue + `"
                     `;
 
-        if (cell.type === Cell.kCellPlay) {
-            this.data = this.data + 'id="cell-' + cell.numberValue + '"';
-        }
+        // if (cell.type === Cell.kCellPlay) {
+        //     this.data = this.data + 'id="cell-' + cell.numberValue + '"';
+        // }
 
         this.data = this.data + `>`;
 
