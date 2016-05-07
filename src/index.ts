@@ -13,12 +13,11 @@ let sizeN: number;
 let sizeM: number;
 
 let cellViewLength:  number;
+let halfCellViewLength:  number;
 let originViewPoint: CGPoint;
 let kModelToView:    number;
 
-//let tileViews: TileView[];
 let tileViews: Object;
-
 
 let previousTouchPoint: CGPoint;
 let currentTouchPoint:  CGPoint;
@@ -28,11 +27,12 @@ let moveDirectionDefine: boolean;
 
 $(document).ready(function() {
 
-    let levelNumber = 1;
+    let levelNumber = 2;
     model = new Model(levelNumber);
 
     mainScreen = $('#main_screen');
     let width = mainScreen.width();
+    //console.log(mainScreen.height());
     mainScreen.height(width);
 
     sizeN = model.getSizeN();
@@ -41,10 +41,15 @@ $(document).ready(function() {
     let size = CGSize.Make(mainScreen.width(), mainScreen.height());
 
     cellViewLength = size.width / sizeM;
+    halfCellViewLength = cellViewLength / 2;
     let yShift = (size.height - cellViewLength * sizeN) / 2;
     originViewPoint = CGPoint.Make(0, yShift);
 
     kModelToView = cellViewLength / Model.kModelCellLength;
+
+
+    console.log(cellViewLength,halfCellViewLength,originViewPoint,kModelToView);
+
 
     addCells();
     addTiles();
@@ -52,8 +57,6 @@ $(document).ready(function() {
     updateTiles();
 
 });
-
-
 
 function addCells() {
 
@@ -170,12 +173,12 @@ function addEventListeners() {
 function updateTiles() {
 
     for (let key in tileViews) {
-        
+
         let tileView = tileViews[key];
         let tileCenter = tileView.tile.center;
         let center = CGPoint.Make(originViewPoint.x + kModelToView * tileCenter.x,
             originViewPoint.y + kModelToView * tileCenter.y);
-        $(tileView.getId()).offset({left: center.x, top: center.y});
+        $(tileView.getId()).offset({left: center.x - halfCellViewLength, top: center.y - halfCellViewLength});
 
         let newClass = tileView.tile.onValidCell ? 'number-on-valid-cell' : 'number-out';
         if (tileView.currentNumberClass !== newClass) {

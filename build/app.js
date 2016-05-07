@@ -21,6 +21,7 @@ webpackJsonp([0],[
 	var sizeN;
 	var sizeM;
 	var cellViewLength;
+	var halfCellViewLength;
 	var originViewPoint;
 	var kModelToView;
 	var tileViews;
@@ -29,7 +30,7 @@ webpackJsonp([0],[
 	var moveDirection;
 	var moveDirectionDefine;
 	$(document).ready(function () {
-	    var levelNumber = 1;
+	    var levelNumber = 2;
 	    model = new model_1.Model(levelNumber);
 	    mainScreen = $('#main_screen');
 	    var width = mainScreen.width();
@@ -38,9 +39,11 @@ webpackJsonp([0],[
 	    sizeM = model.getSizeM();
 	    var size = objc_types_1.CGSize.Make(mainScreen.width(), mainScreen.height());
 	    cellViewLength = size.width / sizeM;
+	    halfCellViewLength = cellViewLength / 2;
 	    var yShift = (size.height - cellViewLength * sizeN) / 2;
 	    originViewPoint = objc_types_1.CGPoint.Make(0, yShift);
 	    kModelToView = cellViewLength / model_1.Model.kModelCellLength;
+	    console.log(cellViewLength, halfCellViewLength, originViewPoint, kModelToView);
 	    addCells();
 	    addTiles();
 	    addEventListeners();
@@ -118,7 +121,7 @@ webpackJsonp([0],[
 	        var tileView = tileViews[key];
 	        var tileCenter = tileView.tile.center;
 	        var center = objc_types_1.CGPoint.Make(originViewPoint.x + kModelToView * tileCenter.x, originViewPoint.y + kModelToView * tileCenter.y);
-	        $(tileView.getId()).offset({ left: center.x, top: center.y });
+	        $(tileView.getId()).offset({ left: center.x - halfCellViewLength, top: center.y - halfCellViewLength });
 	        var newClass = tileView.tile.onValidCell ? 'number-on-valid-cell' : 'number-out';
 	        if (tileView.currentNumberClass !== newClass) {
 	            var numberID = tileView.getNumberID();
@@ -166,7 +169,7 @@ webpackJsonp([0],[
 	
 	
 	// module
-	exports.push([module.id, "body .grid {\n  max-width: 600px;\n  background: #ddd;\n  position: relative;\n}\nbody .grid .cell {\n  position: absolute;\n  border: 1px solid #000;\n}\nbody .grid .cell.type-0 {\n  background-color: #a52a2a;\n}\nbody .grid .cell.type-1 {\n  background-color: #fff;\n}\nbody .grid .cell.type-2 {\n  background-color: #fff;\n}\nbody .grid .tile {\n  position: absolute;\n  border: 1px solid #000;\n  background-color: #f00;\n}\nbody .grid .number-on-valid-cell {\n  color: #ff0;\n}\nbody .grid .number-out {\n  color: #000;\n}\n", ""]);
+	exports.push([module.id, "body {\n  margin: 0;\n}\nbody .grid {\n  max-width: 600px;\n  background: #ddd;\n  position: relative;\n  margin: 0;\n}\nbody .grid .cell {\n  position: absolute;\n  border: 1px solid #000;\n}\nbody .grid .cell.type-0 {\n  background-color: #a52a2a;\n}\nbody .grid .cell.type-1 {\n  background-color: #fff;\n}\nbody .grid .cell.type-2 {\n  background-color: #fff;\n}\nbody .grid .tile {\n  box-sizing: border-box;\n  position: absolute;\n  border: 0.5px solid #f0e68c;\n  background-color: #f00;\n  display: table-cell;\n  border-collapse: collapse;\n}\nbody .grid .number-on-valid-cell {\n  color: #ff0;\n}\nbody .grid .number-out {\n  color: #000;\n}\n", ""]);
 	
 	// exports
 

@@ -8,11 +8,14 @@
 
 body {
 
+       margin: 0;
+
        .grid{
             max-width:600px;
             //height: 400px
             background: #ddd;
             position: relative;
+            margin: 0;
 
       .cell{
             position: absolute;
@@ -28,9 +31,12 @@ body {
             }
       }
       .tile{
-            position: absolute;
-            border: 1px solid #000;
-            background-color:red;
+                box-sizing: border-box;
+                position: absolute;
+                border: 0.5px solid khaki;
+                background-color: #f00;
+                display: table-cell;
+                border-collapse: collapse;
       }
       .number-on-valid-cell{
             color: yellow;
