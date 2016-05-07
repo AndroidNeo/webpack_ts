@@ -1,5 +1,4 @@
 import {Tile} from '../model/tile';
-import {GameView} from './gameview';
 /**
  * Created by Artur on 03.05.16.
  */
@@ -8,6 +7,7 @@ export class TileView {
 
     tile: Tile;
     data: string;
+    currentNumberClass: string;
     
     constructor(tile: Tile, params: any) {
         
@@ -28,7 +28,9 @@ export class TileView {
 
         this.data = this.data + `>`;
 
-        this.data = this.data + `<span class="number">` + tile.numberValue + `</span>`;
+        let numberID = '"' + 'number-' + tile.numberValue + '"';
+
+        this.data = this.data + `<span id=` + numberID + `>` + tile.numberValue + `</span>`;
 
         this.data = this.data + `</div>`;
 
@@ -38,6 +40,13 @@ export class TileView {
         return '#tile-' + this.tile.numberValue;
     }
     
+    getNumberID() {
+        return '#number-'+this.tile.numberValue;
+    }
+
+    static checkIsTileViewID(testID: string) {
+        return (testID.substr(0,5) === 'tile-');
+    }
 }
 
 

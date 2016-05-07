@@ -44,9 +44,11 @@ webpackJsonp([0],[
 	    addCells();
 	    addTiles();
 	    addEventListeners();
+	    updateTiles();
 	});
 	function addCells() {
-	    var params = { 'cellViewLength': cellViewLength, 'originViewPoint': originViewPoint };
+	    var params = { 'cellViewLength': cellViewLength,
+	        'originViewPoint': originViewPoint };
 	    var gameField = model.getGameField();
 	    for (var i = 0; i < sizeN; i++) {
 	        for (var j = 0; j < sizeM; j++) {
@@ -58,28 +60,32 @@ webpackJsonp([0],[
 	}
 	function addTiles() {
 	    var params = { 'cellViewLength': cellViewLength, 'originViewPoint': originViewPoint };
-	    tileViews = [];
+	    tileViews = {};
 	    for (var _i = 0, _a = model.getTiles(); _i < _a.length; _i++) {
 	        var tile = _a[_i];
 	        var tileView = new tileview_1.TileView(tile, params);
-	        tileViews.push(tileView);
+	        tileViews[tileView.getId()] = tileView;
 	        mainScreen.append(tileView.data);
 	    }
 	}
 	function addEventListeners() {
-	    for (var _i = 0, tileViews_1 = tileViews; _i < tileViews_1.length; _i++) {
-	        var tileView = tileViews_1[_i];
-	        $(tileView.getId()).on('touchstart', function ($event) {
-	            var event = $event.originalEvent;
+	    mainScreen.on('touchstart', function ($event) {
+	        $event.preventDefault();
+	        var event = $event.originalEvent;
+	        var isTileViewID = tileview_1.TileView.checkIsTileViewID(event.target.id);
+	        if (isTileViewID) {
 	            previousTouchPoint = objc_types_1.CGPoint.Make(event.touches[0].pageX, event.touches[0].pageY);
 	            moveDirectionDefine = false;
 	            moveDirection = objc_types_1.CGVector.Make(0, 0);
 	            model.touchTileBegan();
-	        });
-	    }
-	    var _loop_1 = function(tileView) {
-	        $(tileView.getId()).on('touchmove', function ($event) {
-	            var event = $event.originalEvent;
+	        }
+	    }).on('touchmove', function ($event) {
+	        $event.preventDefault();
+	        var event = $event.originalEvent;
+	        var isTileViewID = tileview_1.TileView.checkIsTileViewID(event.target.id);
+	        if (isTileViewID) {
+	            var targetID = '#' + event.target.id;
+	            var tileView = tileViews[targetID];
 	            currentTouchPoint = objc_types_1.CGPoint.Make(event.touches[0].pageX, event.touches[0].pageY);
 	            var s = objc_types_1.CGVector.MakeByPoints(previousTouchPoint, currentTouchPoint);
 	            if (moveDirectionDefine === false) {
@@ -100,26 +106,26 @@ webpackJsonp([0],[
 	                updateTiles();
 	            }
 	            previousTouchPoint = currentTouchPoint;
-	        });
-	    };
-	    for (var _a = 0, tileViews_2 = tileViews; _a < tileViews_2.length; _a++) {
-	        var tileView = tileViews_2[_a];
-	        _loop_1(tileView);
-	    }
-	    for (var _b = 0, tileViews_3 = tileViews; _b < tileViews_3.length; _b++) {
-	        var tileView = tileViews_3[_b];
-	        $(tileView.getId()).on('touchend', function ($event) {
-	            model.setTilesOnGameField();
-	            updateTiles();
-	        });
-	    }
+	        }
+	    }).on('touchend', function ($event) {
+	        $event.preventDefault();
+	        model.setTilesOnGameField();
+	        updateTiles();
+	    });
 	}
 	function updateTiles() {
-	    for (var _i = 0, tileViews_4 = tileViews; _i < tileViews_4.length; _i++) {
-	        var tileView = tileViews_4[_i];
+	    for (var key in tileViews) {
+	        var tileView = tileViews[key];
 	        var tileCenter = tileView.tile.center;
 	        var center = objc_types_1.CGPoint.Make(originViewPoint.x + kModelToView * tileCenter.x, originViewPoint.y + kModelToView * tileCenter.y);
 	        $(tileView.getId()).offset({ left: center.x, top: center.y });
+	        var newClass = tileView.tile.onValidCell ? 'number-on-valid-cell' : 'number-out';
+	        if (tileView.currentNumberClass !== newClass) {
+	            var numberID = tileView.getNumberID();
+	            $(numberID).toggleClass(false);
+	            $(numberID).toggleClass(newClass, true);
+	            tileView.currentNumberClass = newClass;
+	        }
 	    }
 	}
 
@@ -160,7 +166,7 @@ webpackJsonp([0],[
 	
 	
 	// module
-	exports.push([module.id, "body .grid {\n  max-width: 600px;\n  background: #ddd;\n  position: relative;\n}\nbody .grid .cell {\n  position: absolute;\n  border: 1px solid #000;\n}\nbody .grid .cell.type-0 {\n  background-color: #a52a2a;\n}\nbody .grid .cell.type-1 {\n  background-color: #fff;\n}\nbody .grid .cell.type-2 {\n  background-color: #fff;\n}\nbody .grid .tile {\n  position: absolute;\n  border: 1px solid #000;\n  background-color: #f00;\n}\n", ""]);
+	exports.push([module.id, "body .grid {\n  max-width: 600px;\n  background: #ddd;\n  position: relative;\n}\nbody .grid .cell {\n  position: absolute;\n  border: 1px solid #000;\n}\nbody .grid .cell.type-0 {\n  background-color: #a52a2a;\n}\nbody .grid .cell.type-1 {\n  background-color: #fff;\n}\nbody .grid .cell.type-2 {\n  background-color: #fff;\n}\nbody .grid .tile {\n  position: absolute;\n  border: 1px solid #000;\n  background-color: #f00;\n}\nbody .grid .number-on-valid-cell {\n  color: #ff0;\n}\nbody .grid .number-out {\n  color: #000;\n}\n", ""]);
 	
 	// exports
 
@@ -1226,11 +1232,18 @@ webpackJsonp([0],[
 	        this.data = "<div class=\"tile\"\n                    style=\"\n                        width:" + params.cellViewLength + "px;\n                        height:" + params.cellViewLength + "px;\n                        top:" + params.originViewPoint.y + tile.i * params.cellViewLength + "px;\n                        left:" + params.originViewPoint.x + tile.j * params.cellViewLength + "px;\n                    \"\n                    data-onvalidcell=\"" + (tile.onValidCell ? 1 : 0) + "\"\n                    data-number=\"" + tile.numberValue + "\"\n                    ";
 	        this.data = this.data + 'id="tile-' + tile.numberValue + '"';
 	        this.data = this.data + ">";
-	        this.data = this.data + "<span class=\"number\">" + tile.numberValue + "</span>";
+	        var numberID = '"' + 'number-' + tile.numberValue + '"';
+	        this.data = this.data + "<span id=" + numberID + ">" + tile.numberValue + "</span>";
 	        this.data = this.data + "</div>";
 	    }
 	    TileView.prototype.getId = function () {
 	        return '#tile-' + this.tile.numberValue;
+	    };
+	    TileView.prototype.getNumberID = function () {
+	        return '#number-' + this.tile.numberValue;
+	    };
+	    TileView.checkIsTileViewID = function (testID) {
+	        return (testID.substr(0, 5) === 'tile-');
 	    };
 	    return TileView;
 	}());

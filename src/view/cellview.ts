@@ -1,5 +1,4 @@
 import {Cell} from '../model/cell';
-import {GameView} from './gameview';
 /**
  * Created by Artur on 05.05.16.
  */

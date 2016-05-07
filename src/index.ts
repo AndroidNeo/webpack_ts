@@ -1,10 +1,7 @@
 import * as $ from 'jquery';
-import {TestComponent} from './test.component/test.component';
 require('./styl/test.styl')
 import {Model} from './model/model';
-import {Tile} from './model/tile';
 import {CGPoint, CGVector, CGSize} from './objc/objc_types';
-import {GameView} from './view/gameview';
 import {TileView} from './view/tileview';
 import {CellView} from './view/cellview';
 
@@ -19,7 +16,9 @@ let cellViewLength:  number;
 let originViewPoint: CGPoint;
 let kModelToView:    number;
 
-let tileViews: TileView[];
+//let tileViews: TileView[];
+let tileViews: Object;
+
 
 let previousTouchPoint: CGPoint;
 let currentTouchPoint:  CGPoint;
@@ -50,14 +49,16 @@ $(document).ready(function() {
     addCells();
     addTiles();
     addEventListeners();
+    updateTiles();
 
-})
+});
 
 
 
 function addCells() {
 
-    let params = {'cellViewLength':cellViewLength, 'originViewPoint': originViewPoint};
+    let params = {'cellViewLength':cellViewLength,
+                  'originViewPoint': originViewPoint};
 
     let gameField = model.getGameField();
 
@@ -77,12 +78,13 @@ function addTiles() {
 
     let params = {'cellViewLength':cellViewLength, 'originViewPoint': originViewPoint};
 
-    tileViews = [];
+    tileViews = {};
 
     for (let tile of model.getTiles()) {
 
         let tileView = new TileView(tile, params);
-        tileViews.push(tileView);
+        //tileViews.push(tileView)
+        tileViews[tileView.getId()] = tileView;
         mainScreen.append(tileView.data);
 
     }
@@ -91,12 +93,15 @@ function addTiles() {
 
 function addEventListeners() {
 
-    for (let tileView of tileViews) {
+    mainScreen.on('touchstart', function ($event) {
 
+        $event.preventDefault();
 
-        $(tileView.getId()).on('touchstart', function ($event) {
+        let event: any =  $event.originalEvent;
 
-            let event: any          =  $event.originalEvent;
+        let isTileViewID = TileView.checkIsTileViewID(event.target.id);
+        if (isTileViewID) {
+
             previousTouchPoint = CGPoint.Make(event.touches[0].pageX, event.touches[0].pageY);
 
             moveDirectionDefine = false;
@@ -104,15 +109,21 @@ function addEventListeners() {
 
             model.touchTileBegan();
 
-        });
+        }
 
-    }
+    }).on('touchmove', function ($event) {
 
-    for (let tileView of tileViews) {
+        $event.preventDefault();
 
-        $(tileView.getId()).on('touchmove', function ($event) {
+        let event:any = $event.originalEvent;
 
-            let event: any         =  $event.originalEvent;
+        let isTileViewID = TileView.checkIsTileViewID(event.target.id);
+        if (isTileViewID) {
+
+            let targetID = '#' + event.target.id;
+
+            let tileView = tileViews[targetID];
+
             currentTouchPoint = CGPoint.Make(event.touches[0].pageX, event.touches[0].pageY);
 
             var s = CGVector.MakeByPoints(previousTouchPoint, currentTouchPoint);
@@ -142,30 +153,40 @@ function addEventListeners() {
 
             previousTouchPoint = currentTouchPoint;
 
-        });
+        }
 
-    }
+    }).on('touchend', function ($event) {
 
-    for (let tileView of tileViews) {
+        $event.preventDefault();
 
-        $(tileView.getId()).on('touchend', function ($event) {
+        model.setTilesOnGameField();
+        updateTiles();
 
-            model.setTilesOnGameField();
-            updateTiles();
+    });
 
-        });
-
-    }
 
 }
 
 function updateTiles() {
-    for (let tileView of tileViews) {
+
+    for (let key in tileViews) {
+        
+        let tileView = tileViews[key];
         let tileCenter = tileView.tile.center;
         let center = CGPoint.Make(originViewPoint.x + kModelToView * tileCenter.x,
             originViewPoint.y + kModelToView * tileCenter.y);
         $(tileView.getId()).offset({left: center.x, top: center.y});
+
+        let newClass = tileView.tile.onValidCell ? 'number-on-valid-cell' : 'number-out';
+        if (tileView.currentNumberClass !== newClass) {
+            let numberID = tileView.getNumberID();
+            $(numberID).toggleClass(false);
+            $(numberID).toggleClass(newClass, true);
+            tileView.currentNumberClass = newClass;
+        }
+
     }
+
 }
 
 
