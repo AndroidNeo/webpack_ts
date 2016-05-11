@@ -31,8 +31,6 @@ export class TilesBlock {
             tilesToSort.push(tile);
         }
 
-        // let sortedTiles: Tile[] = tilesToSort.sort(this.sortMethodForTiles);
-        
         let params = {'isHorizontal': this.isHorizontal};
         let sortedTiles: Tile[] = tilesToSort.sort(this.createSorter(params));
         

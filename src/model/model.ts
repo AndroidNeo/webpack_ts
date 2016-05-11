@@ -7,12 +7,9 @@ import {Tile} from './tile';
 import {TilesBlock} from './tilesblock';
 import {MoveDirection} from './movedirection';
 import {CGPoint, CGVector} from '../objc/objc_types';
-
-//test...
-//sdfsdfsf
+import {Levels} from "./levels";
 
 export class Model {
-    
 
     static kModelCellLength:      number = 1.0;
     static kModelMaxMove:         number = 0.15;
@@ -49,77 +46,82 @@ export class Model {
         this.width = 0;
         this.height = 0;
 
-        if (levelNumber === 1) {
+        let level = Levels.getLevelByNumber(levelNumber);
 
-            this.sizeN = 8;
-            this.sizeM = 8;
+        console.log(level);
 
-            this.initGameField();
+        this.sizeN = level.length;
+        this.sizeM = level[0].length;
 
-            for(let i = 0; i < this.sizeN; i++) {
-                this.gameField[i][0].type = Cell.kCellWall;
-                this.gameField[i][this.sizeM - 1].type = Cell.kCellWall;
+        this.initGameField();
+
+        for (let i = 0; i < this.sizeN; i++) {
+            for (let j = 0; j < this.sizeM; j++) {
+
+                let cellContent = level[i][j];
+                let cellContentObject = this.getCellContentObject(cellContent);
+
+                if (cellContentObject.w) {
+                    this.gameField[i][j].type = Cell.kCellWall;
+                } else if (cellContentObject.c > 0) {
+                    this.gameField[i][j].makePlayCellWithNumber(cellContentObject.c);
+                }
+
+                if (cellContentObject.t > 0) {
+                    this.tiles.push(new Tile(cellContentObject.t, Model.getPositionOnGameFieldByIndexIJ(i,j)));
+                }
+
             }
+        }
 
-            for(let j = 0; j < this.sizeM; j++) {
-                this.gameField[0][j].type = Cell.kCellWall;
-                this.gameField[this.sizeN - 1][j].type = Cell.kCellWall;
-            }
-
-            this.gameField[3][3].makePlayCellWithNumber(1);
-            this.gameField[3][4].makePlayCellWithNumber(2);
-            this.gameField[4][3].makePlayCellWithNumber(3);
-            this.gameField[4][4].makePlayCellWithNumber(4);
-
-            this.tiles.push(new Tile(3, Model.getPositionOnGameFieldByIndexIJ(3,3)));
-            this.tiles.push(new Tile(1, Model.getPositionOnGameFieldByIndexIJ(3,4)));
-            this.tiles.push(new Tile(2, Model.getPositionOnGameFieldByIndexIJ(4,3)));
-            this.tiles.push(new Tile(4, Model.getPositionOnGameFieldByIndexIJ(4,4)));
-
-            for (let tile of this.tiles) {
-                Model.setIndexesForTileByCenter(tile);
-            }
-
-        } else if (levelNumber === 2) {
-
-            this.sizeN = 8;
-            this.sizeM = 8;
-
-            this.initGameField();
-
-            for(let i = 0; i < this.sizeN; i++) {
-                this.gameField[i][0].type = Cell.kCellWall;
-                this.gameField[i][this.sizeM - 1].type = Cell.kCellWall;
-            }
-
-            for(let j = 0; j < this.sizeM; j++) {
-                this.gameField[0][j].type = Cell.kCellWall;
-                this.gameField[this.sizeN - 1][j].type = Cell.kCellWall;
-            }
-
-            this.gameField[3][3].makePlayCellWithNumber(1);
-            this.gameField[3][4].makePlayCellWithNumber(2);
-            this.gameField[4][3].makePlayCellWithNumber(3);
-            this.gameField[4][4].makePlayCellWithNumber(4);
-            this.gameField[5][3].makePlayCellWithNumber(5);
-            this.gameField[5][4].makePlayCellWithNumber(6);
-
-            this.tiles.push(new Tile(3, Model.getPositionOnGameFieldByIndexIJ(3,3)));
-            this.tiles.push(new Tile(1, Model.getPositionOnGameFieldByIndexIJ(3,4)));
-            this.tiles.push(new Tile(2, Model.getPositionOnGameFieldByIndexIJ(4,3)));
-            this.tiles.push(new Tile(5, Model.getPositionOnGameFieldByIndexIJ(4,4)));
-            this.tiles.push(new Tile(6, Model.getPositionOnGameFieldByIndexIJ(5,3)));
-            this.tiles.push(new Tile(4, Model.getPositionOnGameFieldByIndexIJ(5,4)));
-
-            for (let tile of this.tiles) {
-                Model.setIndexesForTileByCenter(tile);
-            }
-
+        for (let tile of this.tiles) {
+            Model.setIndexesForTileByCenter(tile);
         }
 
         this.setPropertyOnValidCellForTiles(this.tiles);
 
     }
+
+    getCellContentObject(cellContent) {
+
+        let result = {
+            'f': false,
+            'w': false,
+            'c': 0,
+            't': 0
+        };
+
+        let idx_c = cellContent.indexOf('c');
+        let idx_t = cellContent.indexOf('t');
+
+        if (cellContent === 'w') {
+            result.w = true;
+        } else {
+
+            if (cellContent.indexOf('f') >= 0) {
+                result.f = true;
+            } else if (idx_c >= 0) {
+                let c_str = cellContent.substr(idx_c + 1, 1);
+                let c_str_next = cellContent.substr(idx_c + 2, 1);
+                result.c = parseInt(c_str) + (this.isNumeric(c_str_next) ? parseInt(c_str_next) : 0);
+            }
+
+            if (idx_t >= 0) {
+                let t_str = cellContent.substr(idx_t + 1, 1);
+                let t_str_next = cellContent.substr(idx_t + 2, 1);
+                result.t = parseInt(t_str) + (this.isNumeric(t_str_next) ? parseInt(t_str_next) : 0);
+            }
+
+        }
+
+        return result;
+
+    }
+
+    isNumeric(n:string) {
+        return !isNaN(parseFloat(n)) && isFinite(parseFloat(n));
+    }
+
 
     static getPositionOnGameFieldByIndexIJ(i: number, j: number) {
         return CGPoint.Make((j + 0.5) * Model.kModelCellLength, (i + 0.5) * Model.kModelCellLength);

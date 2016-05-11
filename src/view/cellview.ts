@@ -26,10 +26,6 @@ export class CellView {
                     data-number="` + cell.numberValue + `"
                     `;
 
-        // if (cell.type === Cell.kCellPlay) {
-        //     this.data = this.data + 'id="cell-' + cell.numberValue + '"';
-        // }
-
         this.data = this.data + `>`;
 
         if (cell.type === Cell.kCellPlay) {
