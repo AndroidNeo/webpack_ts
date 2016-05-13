@@ -52,14 +52,24 @@ export class Levels {
 
     private static getRawLevelByNumber(levelNumber: number) {
 
-        let result:string = '';
+        let levels = Levels.getRawLevels();
 
-        if (levelNumber === 1) {
-            result = 'w,f,f,f,f,f,f,f;w,f,c1,c2,f.t4,f,f,f;w,f,c3,f,f.t2,f,f,f;f,f,c4.t5,f.t3,f.t1,f,f,f;f,f,f,f,f,f,f,f;f,f,f,f,f,f,f,f;f,f,f,f,f,f,f,f;f,f,f,f,f,f,f,f;';
-        }
+        return levels[levelNumber - 1];
+
+    }
+
+    private static getRawLevels() {
+        
+        let result = [
+            'w,w,w,w,w,w,w,w;w,f,f,f,f,f,f,w;w,f,f,f,f,f,f,w;w,f,f,c1,c2,f,f,w;w,f,f,c3,f.t3,f.t1,f,w;w,f,f,f,f.t2,f,f,w;w,f,f,f,f,f,f,w;w,w,w,w,w,w,w,w;'
+        ];
 
         return result;
-
+        
+    }
+    
+    static getCount() {
+        return Levels.getRawLevels().length;
     }
 
 }
