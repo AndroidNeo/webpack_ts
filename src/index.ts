@@ -28,7 +28,7 @@ let moveDirectionDefine: boolean;
 
 $(document).ready(function() {
 
-    let levelNumber = Levels.getCount();
+    let levelNumber = 6; //Levels.getCount();
     model = new Model(levelNumber);
 
     mainScreen = $('#main_screen');
