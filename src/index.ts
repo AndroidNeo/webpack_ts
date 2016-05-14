@@ -4,6 +4,7 @@ import {Model} from './model/model';
 import {CGPoint, CGVector, CGSize} from './objc/objc_types';
 import {TileView} from './view/tileview';
 import {CellView} from './view/cellview';
+import {Levels} from "./model/levels";
 
 let model: Model;
 
@@ -27,7 +28,7 @@ let moveDirectionDefine: boolean;
 
 $(document).ready(function() {
 
-    let levelNumber = 1;
+    let levelNumber = Levels.getCount();
     model = new Model(levelNumber);
 
     mainScreen = $('#main_screen');
