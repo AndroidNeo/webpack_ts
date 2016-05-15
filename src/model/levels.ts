@@ -71,6 +71,7 @@ export class Levels {
             ,'w,w,w,w,w,w,w,w;w,f,f,f,f,f,f,w;w,f,f,f,c1.t5,f,f,w;w,f,f,f,c2.t6,c3.t4,f,w;w,w,w,w,c4.t2,w,w,w;w,f,f,c5.t1,c6.t7,f,f,w;w,f,f,f,c7.t3,f,f,w;w,w,w,w,w,w,w,w;'
             ,'w,w,w,w,w,w,w,w;w,w,f,f,f,f,w,w;w,f,w,c1.t3,c2.t1,w,f,w;w,f,w,c3.t2,c4.t5,w,f,w;w,f,w,c5.t6,c6.t4,w,f,w;w,w,f,f,f,f,w,w;w,w,f,f,f,f,w,w;w,w,w,w,w,w,w,w;'
             ,'w,w,w,w,w,w,w,w;w,f,f,f,f,f,f,w;w,f,f,f,w,w,f,w;w,f,c1.t6,c2.t1,c3.t5,w,f,w;w,f,w,c4.t3,c5.t2,f,f,w;w,f,w,w,c6.t4,f,f,w;w,f,f,f,f,f,f,w;w,w,w,w,w,w,w,w;'
+            ,'w,w,w,w,w,w,w,w;w,f,w,f,w,f,f,w;w,f,w,c1.t4,w,f,f,w;w,f,c2.t5,c3.t6,c4.t3,f,f,w;w,f,f,c5.t2,w,f,f,w;w,f,w,c6.t1,w,f,f,w;w,f,w,f,w,f,f,w;w,w,w,w,w,w,w,w;'
         ];
 
         return result;
