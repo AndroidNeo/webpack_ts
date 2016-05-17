@@ -14,8 +14,9 @@ webpackJsonp([0],[
 	__webpack_require__(3);
 	var model_1 = __webpack_require__(7);
 	var objc_types_1 = __webpack_require__(9);
-	var tileview_1 = __webpack_require__(13);
-	var cellview_1 = __webpack_require__(14);
+	var tileview_1 = __webpack_require__(14);
+	var cellview_1 = __webpack_require__(15);
+	var levels_1 = __webpack_require__(13);
 	var model;
 	var mainScreen;
 	var sizeN;
@@ -30,7 +31,7 @@ webpackJsonp([0],[
 	var moveDirection;
 	var moveDirectionDefine;
 	$(document).ready(function () {
-	    var levelNumber = 2;
+	    var levelNumber = levels_1.Levels.getCount();
 	    model = new model_1.Model(levelNumber);
 	    mainScreen = $('#main_screen');
 	    var width = mainScreen.width();
@@ -123,9 +124,10 @@ webpackJsonp([0],[
 	        var center = objc_types_1.CGPoint.Make(originViewPoint.x + kModelToView * tileCenter.x, originViewPoint.y + kModelToView * tileCenter.y);
 	        $(tileView.getId()).offset({ left: center.x - halfCellViewLength, top: center.y - halfCellViewLength });
 	        var newClass = tileView.tile.onValidCell ? 'number-on-valid-cell' : 'number-out';
+	        var oldClass = tileView.tile.onValidCell ? 'number-out' : 'number-on-valid-cell';
 	        if (tileView.currentNumberClass !== newClass) {
 	            var numberID = tileView.getNumberID();
-	            $(numberID).toggleClass(false);
+	            $(numberID).toggleClass(oldClass, false);
 	            $(numberID).toggleClass(newClass, true);
 	            tileView.currentNumberClass = newClass;
 	        }
@@ -150,8 +152,8 @@ webpackJsonp([0],[
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/stylus-loader/index.js!./test.styl", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/stylus-loader/index.js!./test.styl");
+			module.hot.accept("!!./../../node_modules/css-loader/index.js?-url!./../../node_modules/stylus-loader/index.js!./test.styl", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js?-url!./../../node_modules/stylus-loader/index.js!./test.styl");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -169,7 +171,7 @@ webpackJsonp([0],[
 	
 	
 	// module
-	exports.push([module.id, "body {\n  margin: 0;\n}\nbody .grid {\n  max-width: 600px;\n  background: #ddd;\n  position: relative;\n  margin: 0;\n}\nbody .grid .cell {\n  position: absolute;\n  border: 1px solid #000;\n}\nbody .grid .cell.type-0 {\n  background-color: #a52a2a;\n}\nbody .grid .cell.type-1 {\n  background-color: #fff;\n}\nbody .grid .cell.type-2 {\n  background-color: #fff;\n}\nbody .grid .tile {\n  box-sizing: border-box;\n  position: absolute;\n  border: 0.5px solid #f0e68c;\n  background-color: #f00;\n  display: table-cell;\n  border-collapse: collapse;\n}\nbody .grid .number-on-valid-cell {\n  color: #ff0;\n}\nbody .grid .number-out {\n  color: #000;\n}\n", ""]);
+	exports.push([module.id, "body {\n  margin: 0;\n}\nbody .grid {\n  max-width: 600px;\n  position: relative;\n  margin: 0;\n}\nbody .grid .cell {\n  position: absolute;\n  border: 1px solid #000;\n}\nbody .grid .tile {\n  box-sizing: border-box;\n  position: absolute;\n  border: 0.5px solid #f0e68c;\n  background-color: #f00;\n  display: table-cell;\n  border-collapse: collapse;\n}\nbody .grid .number-on-valid-cell {\n  color: #ff0;\n}\nbody .grid .number-out {\n  color: #000;\n}\nbody {\n  background: #fff;\n}\nbody .grid .cell {\n  background: rgba(238,228,218,0.35);\n  border: none;\n  text-align: center;\n  box-shadow: 1px 0 0 0 #c4c0a4, 0 1px 0 0 #c4c0a4, 1px 1px 0 0 #c4c0a4, 1px 0 0 0 #c4c0a4 inset, 0 1px 0 0 #c4c0a4 inset;\n  font-size: 22px;\n  font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n}\nbody .grid .type-0 {\n  box-shadow: 4px 3px 3px rgba(0,0,0,0.5);\n  border: none;\n  background: #fff;\n}\nbody .grid .type-1,\nbody .grid .type-2 {\n  z-index: 1;\n}\nbody .grid .tile {\n  background: none;\n  border: none;\n  text-align: center;\n  z-index: 1;\n}\nbody .grid .tile span {\n  position: relative;\n  z-index: 1;\n  font-size: 22px;\n  font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n}\nbody .grid .tile:after {\n  content: '';\n  display: block;\n  top: 3px;\n  left: 3px;\n  position: absolute;\n  background: #f2b179;\n  border-radius: 0px;\n  width: calc(100% - 8px);\n  height: calc(100% - 8px);\n  box-shadow: 4px 3px 3px rgba(0,0,0,0.5);\n}\n", ""]);
 	
 	// exports
 
@@ -492,6 +494,7 @@ webpackJsonp([0],[
 	var tilesblock_1 = __webpack_require__(11);
 	var movedirection_1 = __webpack_require__(12);
 	var objc_types_1 = __webpack_require__(9);
+	var levels_1 = __webpack_require__(13);
 	var Model = (function () {
 	    function Model(levelNumber) {
 	        this.moveDirection = new movedirection_1.MoveDirection();
@@ -504,62 +507,64 @@ webpackJsonp([0],[
 	        this.sizeM = 0;
 	        this.width = 0;
 	        this.height = 0;
-	        if (levelNumber === 1) {
-	            this.sizeN = 8;
-	            this.sizeM = 8;
-	            this.initGameField();
-	            for (var i = 0; i < this.sizeN; i++) {
-	                this.gameField[i][0].type = cell_1.Cell.kCellWall;
-	                this.gameField[i][this.sizeM - 1].type = cell_1.Cell.kCellWall;
-	            }
+	        var level = levels_1.Levels.getLevelByNumber(levelNumber);
+	        console.log(level);
+	        this.sizeN = level.length;
+	        this.sizeM = level[0].length;
+	        this.initGameField();
+	        for (var i = 0; i < this.sizeN; i++) {
 	            for (var j = 0; j < this.sizeM; j++) {
-	                this.gameField[0][j].type = cell_1.Cell.kCellWall;
-	                this.gameField[this.sizeN - 1][j].type = cell_1.Cell.kCellWall;
-	            }
-	            this.gameField[3][3].makePlayCellWithNumber(1);
-	            this.gameField[3][4].makePlayCellWithNumber(2);
-	            this.gameField[4][3].makePlayCellWithNumber(3);
-	            this.gameField[4][4].makePlayCellWithNumber(4);
-	            this.tiles.push(new tile_1.Tile(3, Model.getPositionOnGameFieldByIndexIJ(3, 3)));
-	            this.tiles.push(new tile_1.Tile(1, Model.getPositionOnGameFieldByIndexIJ(3, 4)));
-	            this.tiles.push(new tile_1.Tile(2, Model.getPositionOnGameFieldByIndexIJ(4, 3)));
-	            this.tiles.push(new tile_1.Tile(4, Model.getPositionOnGameFieldByIndexIJ(4, 4)));
-	            for (var _i = 0, _a = this.tiles; _i < _a.length; _i++) {
-	                var tile = _a[_i];
-	                Model.setIndexesForTileByCenter(tile);
+	                var cellContent = level[i][j];
+	                var cellContentObject = this.getCellContentObject(cellContent);
+	                if (cellContentObject.w) {
+	                    this.gameField[i][j].type = cell_1.Cell.kCellWall;
+	                }
+	                else if (cellContentObject.c > 0) {
+	                    this.gameField[i][j].makePlayCellWithNumber(cellContentObject.c);
+	                }
+	                if (cellContentObject.t > 0) {
+	                    this.tiles.push(new tile_1.Tile(cellContentObject.t, Model.getPositionOnGameFieldByIndexIJ(i, j)));
+	                }
 	            }
 	        }
-	        else if (levelNumber === 2) {
-	            this.sizeN = 8;
-	            this.sizeM = 8;
-	            this.initGameField();
-	            for (var i = 0; i < this.sizeN; i++) {
-	                this.gameField[i][0].type = cell_1.Cell.kCellWall;
-	                this.gameField[i][this.sizeM - 1].type = cell_1.Cell.kCellWall;
-	            }
-	            for (var j = 0; j < this.sizeM; j++) {
-	                this.gameField[0][j].type = cell_1.Cell.kCellWall;
-	                this.gameField[this.sizeN - 1][j].type = cell_1.Cell.kCellWall;
-	            }
-	            this.gameField[3][3].makePlayCellWithNumber(1);
-	            this.gameField[3][4].makePlayCellWithNumber(2);
-	            this.gameField[4][3].makePlayCellWithNumber(3);
-	            this.gameField[4][4].makePlayCellWithNumber(4);
-	            this.gameField[5][3].makePlayCellWithNumber(5);
-	            this.gameField[5][4].makePlayCellWithNumber(6);
-	            this.tiles.push(new tile_1.Tile(3, Model.getPositionOnGameFieldByIndexIJ(3, 3)));
-	            this.tiles.push(new tile_1.Tile(1, Model.getPositionOnGameFieldByIndexIJ(3, 4)));
-	            this.tiles.push(new tile_1.Tile(2, Model.getPositionOnGameFieldByIndexIJ(4, 3)));
-	            this.tiles.push(new tile_1.Tile(5, Model.getPositionOnGameFieldByIndexIJ(4, 4)));
-	            this.tiles.push(new tile_1.Tile(6, Model.getPositionOnGameFieldByIndexIJ(5, 3)));
-	            this.tiles.push(new tile_1.Tile(4, Model.getPositionOnGameFieldByIndexIJ(5, 4)));
-	            for (var _b = 0, _c = this.tiles; _b < _c.length; _b++) {
-	                var tile = _c[_b];
-	                Model.setIndexesForTileByCenter(tile);
-	            }
+	        for (var _i = 0, _a = this.tiles; _i < _a.length; _i++) {
+	            var tile = _a[_i];
+	            Model.setIndexesForTileByCenter(tile);
 	        }
 	        this.setPropertyOnValidCellForTiles(this.tiles);
 	    }
+	    Model.prototype.getCellContentObject = function (cellContent) {
+	        var result = {
+	            'f': false,
+	            'w': false,
+	            'c': 0,
+	            't': 0
+	        };
+	        var idx_c = cellContent.indexOf('c');
+	        var idx_t = cellContent.indexOf('t');
+	        if (cellContent === 'w') {
+	            result.w = true;
+	        }
+	        else {
+	            if (cellContent.indexOf('f') >= 0) {
+	                result.f = true;
+	            }
+	            else if (idx_c >= 0) {
+	                var c_str = cellContent.substr(idx_c + 1, 1);
+	                var c_str_next = cellContent.substr(idx_c + 2, 1);
+	                result.c = parseInt(c_str) + (this.isNumeric(c_str_next) ? parseInt(c_str_next) : 0);
+	            }
+	            if (idx_t >= 0) {
+	                var t_str = cellContent.substr(idx_t + 1, 1);
+	                var t_str_next = cellContent.substr(idx_t + 2, 1);
+	                result.t = parseInt(t_str) + (this.isNumeric(t_str_next) ? parseInt(t_str_next) : 0);
+	            }
+	        }
+	        return result;
+	    };
+	    Model.prototype.isNumeric = function (n) {
+	        return !isNaN(parseFloat(n)) && isFinite(parseFloat(n));
+	    };
 	    Model.getPositionOnGameFieldByIndexIJ = function (i, j) {
 	        return objc_types_1.CGPoint.Make((j + 0.5) * Model.kModelCellLength, (i + 0.5) * Model.kModelCellLength);
 	    };
@@ -1229,6 +1234,79 @@ webpackJsonp([0],[
 /***/ function(module, exports) {
 
 	"use strict";
+	var Levels = (function () {
+	    function Levels() {
+	    }
+	    Levels.getLevelByNumber = function (levelNumber) {
+	        var result = [];
+	        var level = Levels.getRawLevelByNumber(levelNumber);
+	        var rows = [];
+	        var p1 = -1;
+	        while (true) {
+	            var p2 = level.indexOf(';', p1 + 1);
+	            if (p2 > 0) {
+	                var row = level.substr(p1 + 1, p2 - p1 - 1);
+	                rows.push(row);
+	                p1 = p2;
+	            }
+	            else {
+	                break;
+	            }
+	        }
+	        for (var i = 0; i < rows.length; i++) {
+	            var rowDetail = [];
+	            var row = rows[i];
+	            row = row + ',';
+	            var p1_1 = -1;
+	            while (true) {
+	                var p2 = row.indexOf(',', p1_1 + 1);
+	                if (p2 > 0) {
+	                    var cellContent = row.substr(p1_1 + 1, p2 - p1_1 - 1);
+	                    rowDetail.push(cellContent);
+	                    p1_1 = p2;
+	                }
+	                else {
+	                    break;
+	                }
+	            }
+	            result.push(rowDetail);
+	        }
+	        return result;
+	    };
+	    Levels.getRawLevelByNumber = function (levelNumber) {
+	        var levels = Levels.getRawLevels();
+	        return levels[levelNumber - 1];
+	    };
+	    Levels.getRawLevels = function () {
+	        var result = [
+	            'w,w,w,w,w,w,w,w;w,f,f,f,f,f,f,w;w,f,f,f,f,f,f,w;w,f,f,c1.t3,c2.t1,f,f,w;w,f,f,c3.t2,f,f,f,w;w,f,f,f,f,f,f,w;w,f,f,f,f,f,f,w;w,w,w,w,w,w,w,w;',
+	            'w,w,w,w,w,w,w,w;w,f,f,f,f,f,f,w;w,f,f,f,f,f,f,w;w,f,f,c1,c2,f,f,w;w,f,f,c3,f.t4,f.t3,f,w;w,f,f,c4,f.t2,f.t1,f,w;w,f,f,f,f,f,f,w;w,w,w,w,w,w,w,w;',
+	            'w,w,w,w,w,w,w,w;w,f,f,f,f,f,f,w;w,f,f,f,f,f,f,w;w,f,f,c1.t3,c2.t1,f,f,w;w,f,f,c3.t2,c4.t4,f,f,w;w,f,f,f,f,f,f,w;w,f,f,f,f,f,f,w;w,w,w,w,w,w,w,w;',
+	            'w,w,w,w,w,w,w,w;w,w,w,f,f,w,w,w;w,w,f,c1,f.t4,f,w,w;w,f,f,c2,f.t2,f,f,w;w,f,f,c3.t1,c4.t5,f,f,w;w,w,f,f.t3,c5,f,w,w;w,w,w,f,f,w,w,w;w,w,w,w,w,w,w,w;',
+	            'w,w,w,w,w,w,w,w;w,f,f,f,f,f,f,w;w,f,c1,c2,c3,c4,f,w;w,w,w,c5,c6,w,w,w;w,w,w,f.t1,f.t5,w,w,w;w,f,f.t3,f.t4,f.t6,f.t2,f,w;w,f,f,f,f,f,f,w;w,w,w,w,w,w,w,w;',
+	            'w,w,w,w,w,w,w,w;w,w,w,w,w,w,w,w;w,w,f,f,f,f,f,w;w,w,f,w,c1.t5,w,f,w;w,w,f,c2.t2,c3.t1,c4.t4,f,w;w,w,f,w,c5.t3,w,f,w;w,w,f,f,f,f,f,w;w,w,w,w,w,w,w,w;',
+	            'w,w,w,w,w,w,w,w;w,w,f,f,f,f,w,w;w,f,w,f,w,w,f,w;w,f,c1.t5,c2.t2,c3.t6,w,f,w;w,f,w,c4.t1,c5.t4,c6.t3,f,w;w,f,w,w,f,w,f,w;w,w,f,f,f,f,w,w;w,w,w,w,w,w,w,w;',
+	            'w,w,w,w,w,w,w,w;w,f,f,f,f,f,f,w;w,f,f,f,c1.t5,f,f,w;w,f,f,f,c2.t6,c3.t4,f,w;w,w,w,w,c4.t2,w,w,w;w,f,f,c5.t1,c6.t7,f,f,w;w,f,f,f,c7.t3,f,f,w;w,w,w,w,w,w,w,w;',
+	            'w,w,w,w,w,w,w,w;w,w,f,f,f,f,w,w;w,f,w,c1.t3,c2.t1,w,f,w;w,f,w,c3.t2,c4.t5,w,f,w;w,f,w,c5.t6,c6.t4,w,f,w;w,w,f,f,f,f,w,w;w,w,f,f,f,f,w,w;w,w,w,w,w,w,w,w;',
+	            'w,w,w,w,w,w,w,w;w,f,f,f,f,f,f,w;w,f,f,f,w,w,f,w;w,f,c1.t6,c2.t1,c3.t5,w,f,w;w,f,w,c4.t3,c5.t2,f,f,w;w,f,w,w,c6.t4,f,f,w;w,f,f,f,f,f,f,w;w,w,w,w,w,w,w,w;',
+	            'w,w,w,w,w,w,w,w;w,f,w,f,w,f,f,w;w,f,w,c1.t4,w,f,f,w;w,f,c2.t5,c3.t6,c4.t3,f,f,w;w,f,f,c5.t2,w,f,f,w;w,f,w,c6.t1,w,f,f,w;w,f,w,f,w,f,f,w;w,w,w,w,w,w,w,w;',
+	            'w,w,w,w,w,w,w,w;w,f.t2,f.t1,f.t6,w,f,f,w;w,f.t5,f.t3,w,f,f,f,w;w,f.t4,f,f,f,f,w,w;w,w,f,f,f,f,c1,w;w,f,f,f,w,c2,c3,w;w,f,f,w,c4,c5,c6,w;w,w,w,w,w,w,w,w;'
+	        ];
+	        return result;
+	    };
+	    Levels.getCount = function () {
+	        return Levels.getRawLevels().length;
+	    };
+	    return Levels;
+	}());
+	exports.Levels = Levels;
+
+
+/***/ },
+/* 14 */
+/***/ function(module, exports) {
+
+	"use strict";
 	var TileView = (function () {
 	    function TileView(tile, params) {
 	        this.tile = tile;
@@ -1236,7 +1314,7 @@ webpackJsonp([0],[
 	        this.data = this.data + 'id="tile-' + tile.numberValue + '"';
 	        this.data = this.data + ">";
 	        var numberID = '"' + 'number-' + tile.numberValue + '"';
-	        this.data = this.data + "<span id=" + numberID + ">" + tile.numberValue + "</span>";
+	        this.data = this.data + "<span id=" + numberID + (" style=\"line-height: " + params.cellViewLength + "px\">") + tile.numberValue + "</span>";
 	        this.data = this.data + "</div>";
 	    }
 	    TileView.prototype.getId = function () {
@@ -1254,7 +1332,7 @@ webpackJsonp([0],[
 
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1262,7 +1340,7 @@ webpackJsonp([0],[
 	var CellView = (function () {
 	    function CellView(cell, params) {
 	        this.cell = cell;
-	        this.data = "<div class=\"cell type-" + cell.type + "\"\n                    style=\"\n                        width:" + params.cellViewLength + "px;\n                        height:" + params.cellViewLength + "px;\n                        top:" + params.originViewPoint.y + cell.i * params.cellViewLength + "px;\n                        left:" + params.originViewPoint.x + cell.j * params.cellViewLength + "px;\n                    \"\n                    data-type=\"" + cell.type + "\"\n                    data-number=\"" + cell.numberValue + "\"\n                    ";
+	        this.data = "<div class=\"cell type-" + cell.type + "\"\n                    style=\"\n                        width:" + params.cellViewLength + "px;\n                        height:" + params.cellViewLength + "px;\n                        top:" + params.originViewPoint.y + cell.i * params.cellViewLength + "px;\n                        left:" + params.originViewPoint.x + cell.j * params.cellViewLength + "px;\n                        line-height:" + params.cellViewLength + "px;\n                    \"\n                    data-type=\"" + cell.type + "\"\n                    data-number=\"" + cell.numberValue + "\"\n                    ";
 	        this.data = this.data + ">";
 	        if (cell.type === cell_1.Cell.kCellPlay) {
 	            this.data = this.data + "<span class=\"number\">" + cell.numberValue + "</span>";

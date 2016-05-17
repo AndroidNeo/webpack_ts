@@ -21,6 +21,7 @@ export class CellView {
                         height:` + params.cellViewLength + `px;
                         top:`    + params.originViewPoint.y + cell.i * params.cellViewLength + `px;
                         left:`   + params.originViewPoint.x + cell.j * params.cellViewLength + `px;
+                        line-height:` + params.cellViewLength + `px;
                     "
                     data-type="`   + cell.type + `"
                     data-number="` + cell.numberValue + `"

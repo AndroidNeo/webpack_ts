@@ -30,10 +30,16 @@ export class TileView {
 
         let numberID = '"' + 'number-' + tile.numberValue + '"';
 
-        this.data = this.data + `<span id=` + numberID + `>` + tile.numberValue + `</span>`;
+        this.data = this.data + `<span id=` + numberID + ` style="line-height: ${params.cellViewLength}px">` + tile.numberValue + `</span>`;
 
         this.data = this.data + `</div>`;
 
+        //`
+        //<div class="tile"
+        //    style="width: "${params.cellViewLength}" + px
+        //    >
+        //</div>
+        //`
     }
     
     getId() {

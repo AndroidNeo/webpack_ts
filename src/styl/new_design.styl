@@ -1,0 +1,37 @@
+body
+  background #fff
+  .grid
+    .cell
+      background rgba(238, 228, 218, 0.35)
+      border none
+      text-align center
+      box-shadow: 1px 0 0 0 #C4C0A4, 0 1px 0 0 #C4C0A4, 1px 1px 0 0 #C4C0A4, 1px 0 0 0 #C4C0A4 inset, 0 1px 0 0 #C4C0A4 inset;
+      font-size 22px;
+      font-family "Helvetica Neue", Helvetica, Arial, sans-serif
+    .type-0
+      box-shadow: 4px 3px 3px rgba(0,0,0,0.5);
+      border: none
+      background #fff
+    .type-1, .type-2
+      z-index 1
+    .tile
+      background none
+      border: none
+      text-align center
+      z-index 1
+      span
+        position relative
+        z-index 1
+        font-size 22px;
+        font-family "Helvetica Neue", Helvetica, Arial, sans-serif
+      &:after
+        content '';
+        display block;
+        top: 3px;
+        left: 3px;
+        position absolute
+        background #f2b179
+        border-radius 0px
+        width: calc(100% - 8px)
+        height: calc(100% - 8px)
+        box-shadow 4px 3px 3px rgba(0,0,0,0.5);

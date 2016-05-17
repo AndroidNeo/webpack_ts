@@ -67,10 +67,11 @@ module.exports = {
       // Support for CSS as raw text
       { test: /\.css$/,   loader: 'style!css' },
 
-      { test: /\.styl$/,   loader: 'style-loader!css-loader!stylus-loader' },
+      { test: /\.styl$/,   loader: 'style-loader!css-loader?-url!stylus-loader' },
 
       // support for .html as raw text
       { test: /\.html$/,  loader: 'raw-loader' },
+      {test: /\.(png|jpg|svg|gif|eot|ttf|otf|woff|woff2)/, loader: 'file?name=[path][name].[ext]'}
     ],
     noParse: [
      /zone\.js\/dist\/.+/,
