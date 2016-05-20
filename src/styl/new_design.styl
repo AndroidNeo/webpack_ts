@@ -1,17 +1,30 @@
 body
   background #fff
+  font-family: 'Raleway', sans-serif;
+  font-size: 28px;
+  font-weight: 400;
   .grid
     .cell
       background rgba(238, 228, 218, 0.35)
       border none
       text-align center
       box-shadow: 1px 0 0 0 #C4C0A4, 0 1px 0 0 #C4C0A4, 1px 1px 0 0 #C4C0A4, 1px 0 0 0 #C4C0A4 inset, 0 1px 0 0 #C4C0A4 inset;
-      font-size 22px;
-      font-family "Helvetica Neue", Helvetica, Arial, sans-serif
+      color rgba(1,147,154,0.7)
     .type-0
       box-shadow: 4px 3px 3px rgba(0,0,0,0.5);
       border: none
       background #fff
+      overflow hidden
+      background rgba(238, 228, 218, 1)
+      &:after
+        content ''
+        //background rgba(238, 228, 218, 0.7)
+        -webkit-filter: blur(10px)
+        width: 110%;
+        height: 110%;
+        top: 0;
+        left 0
+        display block
     .type-1, .type-2
       z-index 1
     .tile
@@ -22,16 +35,15 @@ body
       span
         position relative
         z-index 1
-        font-size 22px;
-        font-family "Helvetica Neue", Helvetica, Arial, sans-serif
+        color #F3F0ED
       &:after
         content '';
         display block;
         top: 3px;
         left: 3px;
         position absolute
-        background #f2b179
-        border-radius 0px
-        width: calc(100% - 8px)
-        height: calc(100% - 8px)
+        background rgba(1, 147, 154, 0.53)
+        border-radius 0
+        width: calc(100% - 6px)
+        height: calc(100% - 6px)
         box-shadow 4px 3px 3px rgba(0,0,0,0.5);
